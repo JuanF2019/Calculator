@@ -119,7 +119,17 @@ public class Calculator
 			}
 		}
 	}
-	
+	/** Selects and makes an operation given a initial value "a" and an operator that is expressed in the cases of the switch, it also partially formats the result for the given mode.<br>
+	*<b>pre:</b> The method for each operation must be written, or given in the corresponding case of the switch.
+	*@param inputString Created scanner for reading Strings. inputString!=null
+	*@param inputInt Created scanner for reading numbers. inputInt!=null
+	*@param operator Operator for selecting the operation to make. operator != null 
+	*@param memory[] The memory array must be initialized. memory != null
+	*@param memoryNames[] The names of the values stored in memory[]. Must be initialized and fill with letters. memoryNames != null
+	*@param a Initial value to participate in the operation. Must be initialized
+	*@param mode Calculator mode to partially format the result. mode != 0
+	*@return result Result of the operation as a double.
+	*/
 	public static double operationSelector(Scanner inputString, Scanner inputInt, String operator, double[] memory, String[] memoryNames, double a, int mode) 
 	{
 		boolean check = false;
@@ -166,7 +176,7 @@ public class Calculator
 					System.out.println("=\n" + result);
 				break;
 				case "!":
-					result = factorial(inputInt, inputString, memory, memoryNames, a, mode, result);
+					result = factorial(inputInt, inputString, memory, memoryNames, a, mode);
 					System.out.println(a + "! = \n" + result);
 				break;
 				case "sqrt":
@@ -175,7 +185,7 @@ public class Calculator
 				break;
 				case "^":
 					b = operationValue(inputString, inputInt, memory, memoryNames, mode);
-					result = intPower(inputInt, a, b);
+					result = intPower(a, b);
 					System.out.println("=\n" + result);
 				break;
 				case "e":
@@ -222,6 +232,17 @@ public class Calculator
 		}			
 		return result;		
 	}
+	/** The method asks for a value, if it corresponds to an operation it invokes the method operationSelector, if it corresponds to letter<br>
+	*it invokes the memoryUse method, and if it corresponds to a number it stored as a double. At the end is returned the final stored value<br>
+	*as a double<br>
+	*<b>pre:</b> The methods operationSelector and memoryUse must be created.
+	*@param inputString Created scanner for reading Strings. inputString!=null
+	*@param inputInt Created scanner for reading numbers. inputInt!=null
+	*@param memory[] The memory array must be initialized. memory != null
+	*@param memoryNames[] The names of the values stored in memory[]. Must be initialized and fill with letters. memoryNames != null
+	*@param mode Calculator mode for method operationSelector. mode != 0
+	*@return value Final stored value as a double.
+	*/
 	public static double operationValue(Scanner inputString, Scanner inputInt, double[] memory, String[] memoryNames, int mode)
 	{
 		boolean check = true;
@@ -244,7 +265,7 @@ public class Calculator
 				value = inputSave.nextDouble();
 				check2 = true;				
 			}
-			else //If it gets here it knows is a string, in order to go to memoryUse method.
+			else //If it gets here it knows is a string. 
 			{
 				check2 = false;
 				for (int cont = 0;cont<singleValueOperations.length;cont++)
@@ -270,6 +291,14 @@ public class Calculator
 		}
 		return value;
 	}
+	/** The method allows the use of the memory[], given the corresponding letter of the memory value it returns it as a double to use in.<br>
+	*further operations.<br>
+	*@param inputString Created scanner for reading Strings. inputString!=null
+	*@param inputInt Created scanner for reading numbers. inputInt!=null
+	*@param memory[] The memory array must be initialized and fill with zeroes. memory != null
+	*@param memoryNames[] The names of the values stored in memory[]. Must be initialized and fill with letters. memoryNames != null
+	*@return value Value to use in further operations.
+	*/
 	public static double memoryUse(Scanner inputString, Scanner inputInt, double[] memory, String[] memoryNames) //Is only used when using memory.
 	{
 		double value = 0;
@@ -306,6 +335,13 @@ public class Calculator
 		} while(!check);
 		return value;
 	}
+	/** Saves a given value to memory and stores the memoryPosition for the next time the method is invoked.<br>
+	**<b>pos:</b> The memory[] is modified adding the new value
+	*@param memoryPosition Must be initialized. memoryPosition<11
+	*@param result The result to store in the memory[].
+	*@param memory[] The memory array must be initialized and fill with zeroes. memory != null	
+	*@return memoryPosition The position to use the next time this method is invoked.
+	*/
 	public static int memorySave(int memoryPosition, double result, double[] memory)//Requiere arreglo de memoria ya creado y lleno de 0. Requiere variable memoryPosition declarada e inicializada(param). Requiere valor de resultado a guardar en memoria.(param)
 	{
 		memory[memoryPosition] = result;
@@ -319,7 +355,16 @@ public class Calculator
 		}
 		return memoryPosition;
 	}
-	public static double factorial(Scanner inputString, Scanner inputInt, double[] memory, String[] memoryNames, double a, int mode, double result)
+	/** Calculates the factorial of a given number. The other parameters are requiered for re asking the user for another value, it could also be from the memory.<br>
+	*@param inputString Created scanner for reading Strings. inputString!=null
+	*@param inputInt Created scanner for reading numbers. inputInt!=null
+	*@param memory[] The memory array must be initialized and fill with zeroes. memory != null
+	*@param memoryNames[] The names of the values stored in memory[]. Must be initialized and fill with letters. memoryNames != null
+	*@param a Value to take the factorial of.
+	*@param mode Calculator mode required in method operationValue. mode != 0
+	*@return factorialResult Result of the factorial as a double.
+	*/
+	public static double factorial(Scanner inputString, Scanner inputInt, double[] memory, String[] memoryNames, double a, int mode)
 	{
 		double factorialResult = a;
 		boolean check = false;
@@ -350,6 +395,10 @@ public class Calculator
 		} while (!check);
 		return factorialResult;
 	}
+	/** Calculates the square root of a given value, does not check if the value is negative. <br>
+	*@param a The value for calculating the root. a>0
+	*@return squareRootResult Result of the square root as a double.
+	*/
 	public static double squareRoot(double a)
 	{
 		double squareRootResult=0;
@@ -391,7 +440,12 @@ public class Calculator
 		}
 		return squareRootResult;	
 	}
-	public static double intPower(Scanner inputInt, double a, double b)
+	/**Calculates the power of a given value with another value as an exponent.<br>
+	*@param a Value of the base.
+	*@param b Value of the exponent, must be an integer but as a double. b%1=0
+	*@return powerResult Result of the power as a double.
+	*/
+	public static double intPower(double a, double b)
 	{
 		double powerResult = a;
 		double bSave = b;
@@ -410,6 +464,14 @@ public class Calculator
 		}		
 		return powerResult;		
 	}
+	/**This method serves as the menu for the conversion mode in the calculator. <br>
+	*<b>pos:</b> The array nnT is created.
+	*@param inputString Created scanner for reading Strings. inputString!=null
+	*@param inputInt Created scanner for reading numbers. inputInt!=null
+	*@param conversionType Must be initialized, must be an integer.
+	*@param numberType Must be Initialized.
+	*@return nnT array composed of the converted value after conversion and the numerical system in which is expressed.
+	*/
 	public static String[] conversion(Scanner inputString, Scanner inputInt, String conversionType, String numberType)
 	{
 		boolean check = false;		
@@ -483,6 +545,10 @@ public class Calculator
 		String[] nnTArray = {number,numberType};
 		return nnTArray;
 	}
+	/** This method converts a binary number into a decimal. <br>
+	*@param number Number in binary to convert to decimal, is assumed that is a valid binary. Must be a string
+	*@return decimalS Decimal value of the number as a string.
+	*/
 	public static String binToDec(String number)
 	{
 		int decimal = 0;
@@ -517,6 +583,10 @@ public class Calculator
 		String decimalS = Integer.toString(decimal);
 		return decimalS;
 	}
+	/** This method converts a decimal number into a binary number. <br>
+	*@param number Number in decimal to convert to binary, is assumed that is a valid decimal, must be a String.
+	*@return binaryNumber Binary value of the number as a string.
+	*/
 	public static String decToBin(String number)
 	{
 		int module = 0;
@@ -531,6 +601,10 @@ public class Calculator
 		
 		return binaryNumber;
 	}
+	/** This method converts a hexadecimal number into a decimal. <br>
+	*@param number Number in hexadecimal to convert to decimal, is assumed that is a valid hexadecimal. Must be a String.
+	*@return decimalS Decimal value of the number as a string.
+	*/
 	public static String hexToDec(String number)
 	{
 		int decimal = 0;
@@ -571,6 +645,10 @@ public class Calculator
 		String decimalS = Integer.toString(decimal);
 		return decimalS;		
 	}
+	/** This method converts a decimal number into a hexadecimal number. <br>
+	*@param number Number in decimal to convert to hexadecimal, is assumed that is a valid decimal, must be a String.
+	*@return hexNumber Hexadecimal value of the number as a string.
+	*/
 	public static String decToHex(String number)
 	{
 		String[] hexDigits = {"0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"};
